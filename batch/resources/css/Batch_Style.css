@@ -1,0 +1,23 @@
+/**
+ * Batch plugin for Craft CMS
+ *
+ * Batch CSS
+ *
+ * @author    ChaseGiunta
+ * @copyright Copyright (c) 2017 ChaseGiunta
+ * @link      google.com
+ * @package   Batch
+ * @since     1.0.0
+ */
+
+ input#sectionSetting,
+ input#userGroupSetting,
+ input#valueSetting,
+ input#fieldSetting {
+   color: #6e757d;
+   background-color: #EBEDEF;
+   font-family: Menlo, monospace;
+ }
+ [v-cloak] { 
+   display: none 
+  }

@@ -1,0 +1,160 @@
+{#
+/**
+ * Batch plugin for Craft CMS
+ *
+ * Batch Settings.twig
+ *
+ * @author    ChaseGiunta
+ * @copyright Copyright (c) 2017 ChaseGiunta
+ * @link      chasegiunta.com
+ * @package   Batch
+ * @since     1.0.0
+ */
+#}
+
+{% extends "batch/_layouts/settings" %}
+
+{% set content %}
+
+  {% import "_includes/forms" as forms %}
+
+  {% includejsfile "//unpkg.com/vue" %}
+  {% includeCssResource "batch/css/Batch_Style.css" %}
+  {% includeJsResource "batch/js/Batch_Script.js" %}
+
+  {% set locales = craft.i18n.getSiteLocales() %}
+  {% set userGroups = craft.userGroups.getAllGroups %}
+  {% set sections = craft.sections.getAllSections() %}
+    
+  <form class="" method="post" accept-charset="UTF-8">
+    <input type="hidden" name="action" value="batch">
+    <input type="hidden" name="pluginClass" value="Batch">
+    <input type="hidden" name="redirect" value="settings/plugins/batch/settings">
+
+    <div class="field" id="elementTypeSetting-field" data-cpfieldlinks="true">
+      <div class="heading">
+        <label id="elementTypeSetting-label" for="elementTypeSetting">Element Type</label>
+      </div>
+      <div class="input ltr">
+        <div class="select">
+          <select id="elementTypeSetting" name="elementTypeSetting" v-model="elementType">
+            <option value="Entry">Entries</option>
+            <option value="User">Users</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="sectionSetting-field" class="field" data-cpfieldlinks="true" v-if="elementType == 'Entry'">
+      <div class="heading">
+        <label id="sectionSetting-label" for="sectionSetting">Section</label>
+      </div>
+      <div class="input ltr">
+        <div class="select">
+          <select id="sectionSetting" name="sectionSetting">
+            {% for section in sections %}
+              <option value="{{ section.handle }}">{{ section }}</option>
+            {% endfor %}
+            <option value="null">All</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="sectionUserGroup-field" class="field" data-cpfieldlinks="true" v-if="elementType == 'User'" v-cloak>
+      <div class="heading">
+        <label id="sectionUserGroup-label" for="userGroupSetting">User Group</label>
+      </div>
+
+      <div class="input ltr">
+        <div class="select">
+          <select id="userGroupSetting" name="userGroupSetting">
+            {% for group in userGroups %}
+              <option value="{{ group.handle }}">{{ group }}</option>
+            {% endfor %}
+            <option value="null">All</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="field" id="statusSetting-field" data-cpfieldlinks="true" v-if="elementType == 'Entry'">
+      <div class="heading">
+        <label id="statusSetting-label" for="statusSetting">Entry Status</label>
+      </div>
+      <div class="input ltr">
+        <div class="select">
+          <select id="statusSetting" name="statusSetting">
+            <option value="live">Live</option>
+            <option value="pending">Pending</option>
+            <option value="expired">Expired</option>
+            <option value="disabled">Disabled</option>
+            <option value="null">All</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" id="statusSetting-field" data-cpfieldlinks="true" v-if="elementType == 'User'" v-cloak>
+      <div class="heading">
+        <label id="statusSetting-label" for="statusSetting">User Status</label>
+      </div>
+      <div class="input ltr">
+        <div class="select">
+          <select id="statusSetting" name="statusSetting">
+            <option value="active">Active</option>
+            <option value="locked">Locked</option>
+            <option value="suspended">Suspended</option>
+            <option value="pending">Pending</option>
+            <option value="archived">Archived</option>
+            <option value="null">All</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    {% if locales|length %}
+      <div class="field" id="localeSetting-field" data-cpfieldlinks="true" v-if="elementType == 'Entry'">
+        <div class="heading">
+          <label id="localeSetting-label" for="localeSetting">Locale</label>
+          <div class="instructions"><p>Change will be applied <br>regardless of whether locale is enabled.</p></div>
+        </div>
+        <div class="input ltr">
+          <div class="select">
+            <select id="localeSetting" name="localeSetting">
+              {% for locale in locales %}
+                <option value="{{locale.id}}">{{locale.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div id="fieldSetting-field" class="field" data-cpfieldlinks="true">
+      <div class="heading">
+        <label id="fieldSetting-label" for="fieldSetting">Field Handle</label>
+      </div>
+      <div class="input ltr">
+        <input type="text" id="fieldSetting" name="fieldSetting" autocomplete="off" class="text" >
+      </div>
+    </div>
+
+    <div id="valueSetting-field" class="field" data-cpfieldlinks="true">
+      <div class="heading">
+        <label id="valueSetting-label" for="valueSetting">Field Value</label>
+      </div>
+      <div class="input ltr">
+        <input type="text" id="valueSetting" name="valueSetting" autocomplete="off" class="text">
+      </div>
+    </div>
+
+    <div class="buttons">
+      <input class="btn submit " type="submit" value="Run Batch">
+    </div>
+
+  </form>
+    
+
+{% endset %}

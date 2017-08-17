@@ -1,0 +1,14 @@
+{
+	"name": "batch/batch",
+	"description": "Easily batch set fields value across users or entries",
+	"type": "craft-plugin",
+	"authors": [
+		{
+			"name": "ChaseGiunta",
+			"homepage": "chasegiunta.com"
+		}
+	],
+	"require": {
+		"composer/installers": "~1.0"
+	}
+}
