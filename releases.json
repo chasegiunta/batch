@@ -1,5 +1,16 @@
 [
     {
+        "version": "1.1.0",
+        "downloadUrl": "https://github.com/chasegiunta/batch/archive/master.zip",
+        "date": "2017-08-18T11:00:00-11:00",
+        "notes": [
+            "[Added] Option to filter entries by entry type",
+            "[Added] An option to select fields when applicable",
+            "[Added] Flash message upon creating batch task",
+            "[Improved] Moved Vue.js library to local dependency"
+        ]
+    },
+    {
         "version": "1.0.0",
         "downloadUrl": "https://github.com/chasegiunta/batch/archive/master.zip",
         "date": "2017-08-17T18:51:54.318Z",
