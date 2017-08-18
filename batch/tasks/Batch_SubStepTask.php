@@ -54,14 +54,18 @@ class Batch_SubStepTask extends BaseTask
 		$criteria 		= $this->getSettings()->criteria;
 		$elementType 	= $this->getSettings()->elementType;
 		$step					= $this->getSettings()->step;
-		$field    		= $this->getSettings()->field;
+		$field    		= trim($this->getSettings()->field);
 		$value    		= $this->getSettings()->value;
 
 		$element 			= $criteria[$step];
 
-		$element->getContent()->setAttributes(array(
-			$field => $value )
-		);
+		if ($field == 'enabled') {
+			$element->enabled = $value;
+		} else {
+			$element->getContent()->setAttributes(array(
+				$field => $value )
+			);
+		}
 
 		if ($elementType === 'Entry') {
 			craft()->entries->saveEntry($element);

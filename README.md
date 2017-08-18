@@ -31,7 +31,6 @@ Very simple implementation. Doesn't support Matrix, Super Table, Neo, or other a
 ## Batch Roadmap
 
 * Set multiple fields & values
-* Fetch field handles dynamically
 * Add support for other elements
 * Allow filtering through twig
 

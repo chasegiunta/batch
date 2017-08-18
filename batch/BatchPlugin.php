@@ -39,7 +39,7 @@ class BatchPlugin extends BasePlugin
    */
   public function getDescription()
   {
-      return Craft::t('Easily batch set fields value across users or entries');
+      return Craft::t('Easily batch set field values across users or entries');
   }
 
   /**
@@ -95,7 +95,7 @@ class BatchPlugin extends BasePlugin
    */
   public function getDeveloper()
   {
-      return 'ChaseGiunta';
+      return 'Chase Giunta';
   }
 
   /**

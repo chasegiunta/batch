@@ -18,13 +18,21 @@
 
   {% import "_includes/forms" as forms %}
 
-  {% includejsfile "//unpkg.com/vue" %}
+  {% if craft.config.devMode == 0 %}
+    {% includeJsResource "batch/js/vue.min.js" %}
+  {% else %}
+    {% includejsfile "//unpkg.com/vue" %}
+  {% endif %}
+
   {% includeCssResource "batch/css/Batch_Style.css" %}
   {% includeJsResource "batch/js/Batch_Script.js" %}
 
   {% set locales = craft.i18n.getSiteLocales() %}
   {% set userGroups = craft.userGroups.getAllGroups %}
   {% set sections = craft.sections.getAllSections() %}
+  {% if sections|length %}
+    {% set entryTypes = sections[0].getEntryTypes() %}
+  {% endif %}
     
   <form class="" method="post" accept-charset="UTF-8">
     <input type="hidden" name="action" value="batch">
@@ -37,7 +45,7 @@
       </div>
       <div class="input ltr">
         <div class="select">
-          <select id="elementTypeSetting" name="elementTypeSetting" v-model="elementType">
+          <select id="elementTypeSetting" name="elementTypeSetting" v-model="elementType" @change="fetchFields()">
             <option value="Entry">Entries</option>
             <option value="User">Users</option>
           </select>
@@ -51,10 +59,24 @@
       </div>
       <div class="input ltr">
         <div class="select">
-          <select id="sectionSetting" name="sectionSetting">
+          <select id="sectionSetting" name="sectionSetting" v-model="section" @change="fetchTypesAndFields()">
             {% for section in sections %}
               <option value="{{ section.handle }}">{{ section }}</option>
             {% endfor %}
+            <option value="null">All</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="entryType-field" class="field" data-cpfieldlinks="true" v-if="elementType == 'Entry' && entryTypes.length > 1" v-cloak>
+      <div class="heading">
+        <label id="entryType-label" for="entryTypeSetting">Entry Type</label>
+      </div>
+      <div class="input ltr">
+        <div class="select">
+          <select id="entryType" name="entryTypeSetting" v-model="entryType" @change="fetchFields()">
+            <option :value="type.handle" v-for="type in entryTypes" :key="type.id">${type.name}</option>
             <option value="null">All</option>
           </select>
         </div>
@@ -132,7 +154,20 @@
       </div>
     {% endif %}
 
-    <div id="fieldSetting-field" class="field" data-cpfieldlinks="true">
+    <div id="fieldSetting-field" class="field" data-cpfieldlinks="true" v-if="((entryType != 'null' || entryTypes.length == 1) && section != 'null') || elementType == 'User'">
+      <div class="heading">
+        <label id="fieldSetting-label" for="fieldSetting">Field</label>
+      </div>
+      <div class="input ltr">
+        <div class="select">
+          <select id="fieldSetting" name="fieldSetting">
+            <option v-for="field in fields" :value="field.handle">${field.name}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="fieldSetting-field" class="field" data-cpfieldlinks="true" v-else>
       <div class="heading">
         <label id="fieldSetting-label" for="fieldSetting">Field Handle</label>
       </div>

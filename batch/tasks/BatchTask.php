@@ -26,10 +26,11 @@ class BatchTask extends BaseTask
   {
     return array(
       'elementType' => AttributeType::Mixed,
-      'section' => AttributeType::Mixed,
-      'status' => AttributeType::Mixed,
-      'locale' => AttributeType::Mixed,
-      'userGroup' => AttributeType::Mixed,
+      'section'     => AttributeType::Mixed,
+      'entryType'   => AttributeType::Mixed,
+      'status'      => AttributeType::Mixed,
+      'locale'      => AttributeType::Mixed,
+      'userGroup'   => AttributeType::Mixed,
 
       'field' => AttributeType::Mixed,
       'value' => AttributeType::Mixed,
@@ -93,6 +94,7 @@ class BatchTask extends BaseTask
   {
     $elementType  = $this->getSettings()->elementType;
     $section      = $this->getSettings()->section;
+    $entryType    = $this->getSettings()->entryType;
     $status       = $this->getSettings()->status;
     $locale       = $this->getSettings()->locale;
     $userGroup    = $this->getSettings()->userGroup;
@@ -106,6 +108,9 @@ class BatchTask extends BaseTask
       $criteria = craft()->elements->getCriteria($scopeResolution);
     }
     if (!empty($section)) {
+      $criteria->section = $section;
+    }
+    if (!empty($entryType)) {
       $criteria->section = $section;
     }
     if (!empty($status)) {
