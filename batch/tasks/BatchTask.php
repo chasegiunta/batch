@@ -30,6 +30,9 @@ class BatchTask extends BaseTask
       'entryType'   => AttributeType::Mixed,
       'status'      => AttributeType::Mixed,
       'locale'      => AttributeType::Mixed,
+      'action'      => AttributeType::Mixed,
+      'transferTo'  => AttributeType::Mixed,
+      'fieldType'   => AttributeType::Mixed,
       'userGroup'   => AttributeType::Mixed,
 
       'field' => AttributeType::Mixed,
@@ -68,6 +71,9 @@ class BatchTask extends BaseTask
   {
     $criteria     = $this->getCriteria();
     $elementType  = $this->getSettings()->elementType;
+    $fieldType    = $this->getSettings()->fieldType;
+    $action       = $this->getSettings()->action;
+    $transferTo   = $this->getSettings()->transferTo;
     $field        = $this->getSettings()->field;
     $value        = $this->getSettings()->value;
 
@@ -77,6 +83,9 @@ class BatchTask extends BaseTask
       return $this->runSubTask('Batch_SubStep', $description, array(
         'criteria'    => $criteria,
         'elementType' => $elementType,
+        'fieldType'   => $fieldType,
+        'action'      => $action,
+        'transferTo'  => $transferTo,
         'step'        => $step,
         'field'       => $field,
         'value'       => $value
@@ -111,7 +120,7 @@ class BatchTask extends BaseTask
       $criteria->section = $section;
     }
     if (!empty($entryType)) {
-      $criteria->section = $section;
+      $criteria->type = $entryType;
     }
     if (!empty($status)) {
       $criteria->status = $status;

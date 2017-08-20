@@ -6,3 +6,12 @@
 ] %}
 
 {% set title = "Batch"|t %}
+
+{% if craft.config.devMode == 0 %}
+    {% includeJsResource "batch/js/vue.min.js" %}
+{% else %}
+    {% includejsfile "//unpkg.com/vue" %}
+{% endif %}
+
+{% includeCssResource "batch/css/Batch_Style.css" %}
+{% includeJsResource "batch/js/Batch_Script.js" %}

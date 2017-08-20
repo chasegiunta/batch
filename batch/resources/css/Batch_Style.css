@@ -10,14 +10,19 @@
  * @since     1.0.0
  */
 
- input#sectionSetting,
- input#userGroupSetting,
- input#valueSetting,
- input#fieldSetting {
-   color: #6e757d;
-   background-color: #EBEDEF;
-   font-family: Menlo, monospace;
- }
- [v-cloak] { 
-   display: none 
+input#sectionSetting,
+input#userGroupSetting,
+input#valueSetting,
+input#fieldSetting {
+  color: #6e757d;
+  background-color: #EBEDEF;
+  font-family: Menlo, monospace;
+}
+[v-cloak] { 
+  display: none 
+}
+@media only screen and (min-width: 993px) {
+  td:first-child {
+    min-width: 250px;
   }
+}

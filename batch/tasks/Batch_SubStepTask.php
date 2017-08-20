@@ -18,6 +18,9 @@ class Batch_SubStepTask extends BaseTask
 			'criteria' 		=> AttributeType::Mixed,
 			'step' 				=> AttributeType::Mixed,
 			'elementType' => AttributeType::Mixed,
+			'action'      => AttributeType::Mixed,
+			'transferTo'  => AttributeType::Mixed,
+			'fieldType'		=> AttributeType::Mixed,
 			'field'				=> AttributeType::Mixed,
 			'value'				=> AttributeType::Mixed,
 		);
@@ -53,24 +56,50 @@ class Batch_SubStepTask extends BaseTask
 	{
 		$criteria 		= $this->getSettings()->criteria;
 		$elementType 	= $this->getSettings()->elementType;
+		$fieldType		=	$this->getSettings()->fieldType;
+		$action				= $this->getSettings()->action;
+		$transferTo   = $this->getSettings()->transferTo;
+		
 		$step					= $this->getSettings()->step;
 		$field    		= trim($this->getSettings()->field);
 		$value    		= $this->getSettings()->value;
 
 		$element 			= $criteria[$step];
 
-		if ($field == 'enabled') {
-			$element->enabled = $value;
-		} else {
-			$element->getContent()->setAttributes(array(
-				$field => $value )
-			);
-		}
+		if ($action == 'setValue') {
+			if ($field == 'enabled') {
+				$element->enabled = $value;
+			} else {
 
-		if ($elementType === 'Entry') {
-			craft()->entries->saveEntry($element);
-		} else if ($elementType === 'User') {
-			craft()->users->saveUser($element);
+				if ($fieldType == 'Matrix') {
+					$fieldModel = craft()->fields->getFieldByHandle($field);
+					foreach ($element->$field as $block) {
+						craft()->matrix->deleteBlockById($block->id);
+					}
+				} else {
+					$element->getContent()->setAttributes(array(
+						$field => $value )
+					);
+				}
+
+			}
+
+			if ($elementType === 'Entry') {
+				craft()->entries->saveEntry($element);
+			} else if ($elementType === 'User') {
+				craft()->users->saveUser($element);
+			}
+		} else if ($action == 'delete') {
+			if ($elementType === 'Entry') {
+				craft()->entries->deleteEntry($element);
+			} else if ($elementType === 'User') {
+				if(!empty($transferTo)) {
+					$userModel = craft()->users->getUserById($transferTo[0]);
+					craft()->users->deleteUser($element, $userModel);
+				} else {
+					craft()->users->deleteUser($element, null);
+				}
+			}
 		}
 
 		return true;

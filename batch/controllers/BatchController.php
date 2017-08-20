@@ -34,6 +34,9 @@ class BatchController extends BaseController
       $userGroup      = craft()->request->getPost('userGroupSetting');
       $status         = craft()->request->getPost('statusSetting');
       $locale         = craft()->request->getPost('localeSetting');
+      $action         = craft()->request->getPost('actionSetting');
+      $transferTo     = craft()->request->getPost('transferContentTo');
+      $fieldType      = craft()->request->getPost('fieldTypeSetting');
       $field          = craft()->request->getPost('fieldSetting');
       $value          = craft()->request->getPost('valueSetting');
 
@@ -46,6 +49,9 @@ class BatchController extends BaseController
           'userGroup'     => $userGroup,
           'status'        => $status,
           'locale'        => $locale,
+          'action'        => $action,
+          'transferTo'    => $transferTo,
+          'fieldType'     => $fieldType,
           'field'         => $field,
           'value'         => $value
         ))
@@ -112,5 +118,24 @@ class BatchController extends BaseController
       $this->returnJson($response);
 
     }
+  }
+
+  public function actionGetFieldType()
+  {
+    $fieldHandle = craft()->request->getPost('fieldHandle');
+    $fieldModel = craft()->fields->getFieldByHandle($fieldHandle);
+
+    if (!empty($fieldModel)) {
+      $fieldType = $fieldModel->type;
+      $response = [
+        'success' => true,
+        'fieldType' => $fieldType
+      ];
+    } else {
+      $response = [
+        'success' => false
+      ];
+    }
+    $this->returnJson($response);
   }
 }

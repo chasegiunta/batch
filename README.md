@@ -1,6 +1,6 @@
 # Batch plugin for Craft CMS
 
-Easily batch set field values across users or entries.
+Perform batch actions on your elements. Easily set field values across your elements, or filter down elements for deletion.
 
 ![Screenshot](batch/resources/screenshots/plugin_logo.png)
 

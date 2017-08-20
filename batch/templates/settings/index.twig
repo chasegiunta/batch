@@ -18,15 +18,6 @@
 
   {% import "_includes/forms" as forms %}
 
-  {% if craft.config.devMode == 0 %}
-    {% includeJsResource "batch/js/vue.min.js" %}
-  {% else %}
-    {% includejsfile "//unpkg.com/vue" %}
-  {% endif %}
-
-  {% includeCssResource "batch/css/Batch_Style.css" %}
-  {% includeJsResource "batch/js/Batch_Script.js" %}
-
   {% set locales = craft.i18n.getSiteLocales() %}
   {% set userGroups = craft.userGroups.getAllGroups %}
   {% set sections = craft.sections.getAllSections() %}
@@ -38,152 +29,309 @@
     <input type="hidden" name="action" value="batch">
     <input type="hidden" name="pluginClass" value="Batch">
     <input type="hidden" name="redirect" value="settings/plugins/batch/settings">
+    <input type="hidden" name="fieldTypeSetting" v-model="fieldType">
 
-    <div class="field" id="elementTypeSetting-field" data-cpfieldlinks="true">
-      <div class="heading">
-        <label id="elementTypeSetting-label" for="elementTypeSetting">Element Type</label>
-      </div>
-      <div class="input ltr">
-        <div class="select">
-          <select id="elementTypeSetting" name="elementTypeSetting" v-model="elementType" @change="fetchFields()">
-            <option value="Entry">Entries</option>
-            <option value="User">Users</option>
-          </select>
-        </div>
-      </div>
-    </div>
+    <table class="data">
+      <tbody>
 
-    <div id="sectionSetting-field" class="field" data-cpfieldlinks="true" v-if="elementType == 'Entry'">
-      <div class="heading">
-        <label id="sectionSetting-label" for="sectionSetting">Section</label>
-      </div>
-      <div class="input ltr">
-        <div class="select">
-          <select id="sectionSetting" name="sectionSetting" v-model="section" @change="fetchTypesAndFields()">
-            {% for section in sections %}
-              <option value="{{ section.handle }}">{{ section }}</option>
-            {% endfor %}
-            <option value="null">All</option>
-          </select>
-        </div>
-      </div>
-    </div>
+        <tr>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="elementTypeSetting-label" for="elementTypeSetting">Element Type</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="select">
+                  <select id="elementTypeSetting" name="elementTypeSetting" v-model="elementType" @change="fetchFields()">
+                    <option value="Entry">Entries</option>
+                    <option value="User">Users</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
 
-    <div id="entryType-field" class="field" data-cpfieldlinks="true" v-if="elementType == 'Entry' && entryTypes.length > 1" v-cloak>
-      <div class="heading">
-        <label id="entryType-label" for="entryTypeSetting">Entry Type</label>
-      </div>
-      <div class="input ltr">
-        <div class="select">
-          <select id="entryType" name="entryTypeSetting" v-model="entryType" @change="fetchFields()">
-            <option :value="type.handle" v-for="type in entryTypes" :key="type.id">${type.name}</option>
-            <option value="null">All</option>
-          </select>
-        </div>
-      </div>
-    </div>
+        <tr v-if="elementType == 'Entry'">
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="sectionSetting-label" for="sectionSetting">Section</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="select">
+                  <select id="sectionSetting" name="sectionSetting" v-model="section" @change="fetchTypesAndFields()">
+                    {% for section in sections %}
+                      <option value="{{ section.handle }}">{{ section }}</option>
+                    {% endfor %}
+                    <option value="null">All</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
 
-    <div id="sectionUserGroup-field" class="field" data-cpfieldlinks="true" v-if="elementType == 'User'" v-cloak>
-      <div class="heading">
-        <label id="sectionUserGroup-label" for="userGroupSetting">User Group</label>
-      </div>
+        <tr v-if="elementType == 'Entry' && entryTypes.length > 1" v-cloak>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="entryType-label" for="entryTypeSetting">Entry Type</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="select">
+                  <select id="entryType" name="entryTypeSetting" v-model="entryType" @change="fetchFields(); fooBar();">
+                    <option :value="type.handle" v-for="type in entryTypes" :key="type.id">${type.name}</option>
+                    <option value="null">All</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
 
-      <div class="input ltr">
-        <div class="select">
-          <select id="userGroupSetting" name="userGroupSetting">
-            {% for group in userGroups %}
-              <option value="{{ group.handle }}">{{ group }}</option>
-            {% endfor %}
-            <option value="null">All</option>
-          </select>
-        </div>
-      </div>
+        <tr v-if="elementType == 'User'" v-cloak>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="sectionUserGroup-label" for="userGroupSetting">User Group</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="select">
+                  <select id="userGroupSetting" name="userGroupSetting">
+                    {% for group in userGroups %}
+                      <option value="{{ group.handle }}">{{ group }}</option>
+                    {% endfor %}
+                    <option value="null">All</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
 
-    </div>
+        <tr v-if="elementType == 'Entry'">
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="statusSetting-label" for="statusSetting">Entry Status</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="select">
+                  <select id="statusSetting" name="statusSetting">
+                    <option value="live">Live</option>
+                    <option value="pending">Pending</option>
+                    <option value="expired">Expired</option>
+                    <option value="disabled">Disabled</option>
+                    <option value="null">All</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
 
-    <div class="field" id="statusSetting-field" data-cpfieldlinks="true" v-if="elementType == 'Entry'">
-      <div class="heading">
-        <label id="statusSetting-label" for="statusSetting">Entry Status</label>
-      </div>
-      <div class="input ltr">
-        <div class="select">
-          <select id="statusSetting" name="statusSetting">
-            <option value="live">Live</option>
-            <option value="pending">Pending</option>
-            <option value="expired">Expired</option>
-            <option value="disabled">Disabled</option>
-            <option value="null">All</option>
-          </select>
-        </div>
-      </div>
-    </div>
+        <tr v-if="elementType == 'User'" v-cloak>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="statusSetting-label" for="statusSetting">User Status</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="select">
+                  <select id="statusSetting" name="statusSetting">
+                    <option value="active">Active</option>
+                    <option value="locked">Locked</option>
+                    <option value="suspended">Suspended</option>
+                    <option value="pending">Pending</option>
+                    <option value="archived">Archived</option>
+                    <option value="null">All</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
 
-    <div class="field" id="statusSetting-field" data-cpfieldlinks="true" v-if="elementType == 'User'" v-cloak>
-      <div class="heading">
-        <label id="statusSetting-label" for="statusSetting">User Status</label>
-      </div>
-      <div class="input ltr">
-        <div class="select">
-          <select id="statusSetting" name="statusSetting">
-            <option value="active">Active</option>
-            <option value="locked">Locked</option>
-            <option value="suspended">Suspended</option>
-            <option value="pending">Pending</option>
-            <option value="archived">Archived</option>
-            <option value="null">All</option>
-          </select>
-        </div>
-      </div>
-    </div>
+        {% if locales|length %}
+          <tr v-if="elementType == 'Entry'">
+            <td>
+              <div class="field" data-cpfieldlinks="true">
+                <div class="heading">
+                  <label id="localeSetting-label" for="localeSetting">Locale</label>
+                  <div class="instructions"><p>Change will be applied <br>regardless of whether locale is enabled.</p></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="field" data-cpfieldlinks="true">
+                <div class="input ltr">
+                  <div class="select">
+                    <select id="localeSetting" name="localeSetting">
+                      {% for locale in locales %}
+                        <option value="{{locale.id}}">{{locale.name}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endif %}
 
-    {% if locales|length %}
-      <div class="field" id="localeSetting-field" data-cpfieldlinks="true" v-if="elementType == 'Entry'">
-        <div class="heading">
-          <label id="localeSetting-label" for="localeSetting">Locale</label>
-          <div class="instructions"><p>Change will be applied <br>regardless of whether locale is enabled.</p></div>
-        </div>
-        <div class="input ltr">
-          <div class="select">
-            <select id="localeSetting" name="localeSetting">
-              {% for locale in locales %}
-                <option value="{{locale.id}}">{{locale.name}}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-      </div>
-    {% endif %}
+        <tr>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="actionSetting-label" for="actionSetting">Action</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="select">
+                  <select id="actionSetting" name="actionSetting" v-model="action" @change="fooBar()">
+                    <option value="setValue">Set Field Value</option>
+                    <option value="delete">Delete ${elementType == 'Entry' ? 'Entries' : 'Users'}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
 
-    <div id="fieldSetting-field" class="field" data-cpfieldlinks="true" v-if="((entryType != 'null' || entryTypes.length == 1) && section != 'null') || elementType == 'User'">
-      <div class="heading">
-        <label id="fieldSetting-label" for="fieldSetting">Field</label>
-      </div>
-      <div class="input ltr">
-        <div class="select">
-          <select id="fieldSetting" name="fieldSetting">
-            <option v-for="field in fields" :value="field.handle">${field.name}</option>
-          </select>
-        </div>
-      </div>
-    </div>
+        <tr v-if="showField">
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="fieldSetting-label" for="fieldSetting">Field</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="select">
+                  <select id="fieldSetting" name="fieldSetting" v-model="field" @change="getFieldType()">
+                    <option v-for="field in fields" :value="field.handle">${field.name}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr v-else-if="showHandle">
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="fieldSetting-label" for="fieldSetting">Field Handle</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <input type="text" id="fieldSetting" name="fieldSetting" autocomplete="off" class="text" v-model="field" @input="getFieldType()">
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr v-if="fieldType == 'Matrix' && action != 'delete'">
+          <td colspan="2" v-if="fieldType == 'Matrix'" v-cloak>
+            <div class="warning"><p>Note: running batch on a Matrix field will remove all blocks &amp; content</p></div>
+          </td>
+        </tr>
+        <tr v-else-if="fieldType == 'Lightswitch' && action != 'delete'" v-cloak>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="valueSetting-label" for="valueSetting">Field Value</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <div class="lightswitch" :class="{ on: value == 1 }" role="checkbox" aria-checked="true" @click="value = (value == 0 ? 1 : 0)">
+                  <div class="lightswitch-container">
+                    <div class="label on"></div>
+                    <div class="handle"></div>
+                    <div class="label off"></div>
+                  </div>
+                  <input type="hidden" name="valueSetting" v-model="value"></div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr v-else-if="action != 'delete'">
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="valueSetting-label" for="valueSetting">Field Value</label>
+              </div>
+            <div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <input type="text" id="valueSetting" name="valueSetting" autocomplete="off" class="text">
+              </div>
+            </div>
+          </td>
+        </tr>
 
-    <div id="fieldSetting-field" class="field" data-cpfieldlinks="true" v-else>
-      <div class="heading">
-        <label id="fieldSetting-label" for="fieldSetting">Field Handle</label>
-      </div>
-      <div class="input ltr">
-        <input type="text" id="fieldSetting" name="fieldSetting" autocomplete="off" class="text" >
-      </div>
-    </div>
+        <tr :class="[elementType == 'User' && action == 'delete' ? '' : 'hidden']" v-cloak>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="transferContentTo-label" for="transferContentTo">Transfer Content To</label>
+                <div class="instructions"><p>What do you want to do with their content?</p></div>
+              </div>
+            </div>
+          </td>
+          <td>
+            {{ forms.elementSelectField({
+                id: 'transferContentTo',
+                name: 'transferContentTo',
+                elementType: craft.elements.getElementType('User'),
+                jsClass: 'Craft.BaseElementSelectInput',
+                addButtonLabel: 'Select a User' |t,
+                limit: 1,
+            }) }}
+          </td>
+        </tr>
 
-    <div id="valueSetting-field" class="field" data-cpfieldlinks="true">
-      <div class="heading">
-        <label id="valueSetting-label" for="valueSetting">Field Value</label>
-      </div>
-      <div class="input ltr">
-        <input type="text" id="valueSetting" name="valueSetting" autocomplete="off" class="text">
-      </div>
-    </div>
+
+      </tbody>
+    </table>
+
+    <p></p>
 
     <div class="buttons">
       <input class="btn submit " type="submit" value="Run Batch">
