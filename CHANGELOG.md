@@ -1,5 +1,16 @@
 # Batch Changelog
 
+## 1.3.0 - 2017.09.01
+
+### Added
+* Option to offset steps to prevent stalled tasks
+
+### Changed
+* Removed subtasks, which wasn't needed, to improve execution
+
+### Fixed
+* Only show locales dropdown when applicable
+
 ## 1.2.0 - 2017.08.20
 
 ### Added

@@ -177,13 +177,17 @@
           </td>
         </tr>
 
-        {% if locales|length %}
+        {% if locales|length > 1 %}
           <tr v-if="elementType == 'Entry'">
             <td>
               <div class="field" data-cpfieldlinks="true">
                 <div class="heading">
                   <label id="localeSetting-label" for="localeSetting">Locale</label>
-                  <div class="instructions"><p>Change will be applied <br>regardless of whether locale is enabled.</p></div>
+                  <span class="info">
+                    <span style="display:inline-block;">
+                        Change will be applied regardless of whether locale is enabled.
+                    </span>
+                  </span>
                 </div>
               </div>
             </td>
@@ -327,6 +331,29 @@
           </td>
         </tr>
 
+        <tr>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="heading">
+                <label id="offsetSetting-label" for="fieldSetting">Offset</label>
+                <span class="info">
+                  <span style="display:inline-block;">
+                    Tasks with many steps can be memory-intensive.
+                    If the Batch task is stalling after running for a while, try running the same batch again with an offset.
+                  </span>
+                </span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="field" data-cpfieldlinks="true">
+              <div class="input ltr">
+                <input type="number" id="offsetSetting" name="offsetSetting" autocomplete="off" class="text">
+              </div>
+            </div>
+          </td>
+        </tr>
+
 
       </tbody>
     </table>
@@ -335,6 +362,13 @@
 
     <div class="buttons">
       <input class="btn submit " type="submit" value="Run Batch">
+    </div>
+    <div class="field" data-cpfieldlinks="true">
+      <div class="heading">
+        <div class="instructions">
+          <p>It would be wise to backup your database before running Batch.</p>
+        </div>
+      </div>
     </div>
 
   </form>

@@ -35,6 +35,7 @@ class BatchController extends BaseController
       $status         = craft()->request->getPost('statusSetting');
       $locale         = craft()->request->getPost('localeSetting');
       $action         = craft()->request->getPost('actionSetting');
+      $offset         = craft()->request->getPost('offsetSetting');
       $transferTo     = craft()->request->getPost('transferContentTo');
       $fieldType      = craft()->request->getPost('fieldTypeSetting');
       $field          = craft()->request->getPost('fieldSetting');
@@ -50,6 +51,7 @@ class BatchController extends BaseController
           'status'        => $status,
           'locale'        => $locale,
           'action'        => $action,
+          'offset'        => $offset,
           'transferTo'    => $transferTo,
           'fieldType'     => $fieldType,
           'field'         => $field,

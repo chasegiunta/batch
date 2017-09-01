@@ -15,6 +15,7 @@ namespace Craft;
 
 class BatchTask extends BaseTask
 {
+  public $criteria;
   /**
    * Defines the settings.
    *
@@ -31,6 +32,7 @@ class BatchTask extends BaseTask
       'status'      => AttributeType::Mixed,
       'locale'      => AttributeType::Mixed,
       'action'      => AttributeType::Mixed,
+      'offset'      => AttributeType::Mixed,
       'transferTo'  => AttributeType::Mixed,
       'fieldType'   => AttributeType::Mixed,
       'userGroup'   => AttributeType::Mixed,
@@ -69,28 +71,68 @@ class BatchTask extends BaseTask
    */
   public function runStep($step)
   {
-    $criteria     = $this->getCriteria();
+    $criteria     = $this->criteria;
     $elementType  = $this->getSettings()->elementType;
     $fieldType    = $this->getSettings()->fieldType;
     $action       = $this->getSettings()->action;
     $transferTo   = $this->getSettings()->transferTo;
+
     $field        = $this->getSettings()->field;
     $value        = $this->getSettings()->value;
 
-    $description = "Saving $criteria[$step]";
-    
-    foreach($criteria as $item) {
-      return $this->runSubTask('Batch_SubStep', $description, array(
-        'criteria'    => $criteria,
-        'elementType' => $elementType,
-        'fieldType'   => $fieldType,
-        'action'      => $action,
-        'transferTo'  => $transferTo,
-        'step'        => $step,
-        'field'       => $field,
-        'value'       => $value
-      ));
+    $element 			= $criteria[$step];
+
+    if ($action == 'delete') {
+      $description = "Deleting $criteria[$step]";
+    } else {
+      $description = "Saving $criteria[$step]";
     }
+
+    if ($action == 'setValue') {
+			if ($field == 'enabled') {
+				$element->enabled = $value;
+			} else {
+
+				if ($fieldType == 'Matrix') {
+					$fieldModel = craft()->fields->getFieldByHandle($field);
+					foreach ($element->$field as $block) {
+            if (isset($block)){
+							craft()->elements->deleteElementById($block->id);
+						}
+					}
+				} else {
+					$element->getContent()->setAttributes(array(
+						$field => $value )
+					);
+				}
+
+			}
+
+			if ($elementType === 'Entry') {
+				craft()->entries->saveEntry($element);
+        return true;
+			} else if ($elementType === 'User') {
+        craft()->users->saveUser($element);
+        return true;
+			}
+    } 
+    
+    if ($action == 'delete') {
+			if ($elementType === 'Entry') {
+				craft()->entries->deleteEntry($element);
+        return true;
+			} else if ($elementType === 'User') {
+				if(!empty($transferTo)) {
+					$userModel = craft()->users->getUserById($transferTo[0]);
+					craft()->users->deleteUser($element, $userModel);
+          return true;
+				} else {
+          craft()->users->deleteUser($element, null);
+          return true;
+        }
+      }
+    }
+
   }
 
   /**
@@ -107,35 +149,46 @@ class BatchTask extends BaseTask
     $status       = $this->getSettings()->status;
     $locale       = $this->getSettings()->locale;
     $userGroup    = $this->getSettings()->userGroup;
+    $offset       = $this->getSettings()->offset;
 
-    if (!empty($elementType)) {
-      if ($elementType == 'Entry') {
-        $scopeResolution = ElementType::Entry;
-      } else if ($elementType == 'User') {
-        $scopeResolution = ElementType::User;
-      }
+    if (empty($elementType)) {
+      return false;
+    }
+
+    if ($elementType == 'Entry') {
+
+      $scopeResolution = ElementType::Entry;
       $criteria = craft()->elements->getCriteria($scopeResolution);
-    }
-    if (!empty($section)) {
-      $criteria->section = $section;
-    }
-    if (!empty($entryType)) {
-      $criteria->type = $entryType;
-    }
-    if (!empty($status)) {
-      $criteria->status = $status;
-    }
-    if (!empty($locale)) {
-      $criteria->locale = $locale;
-    }
-    if ($elementType === 'Entry') {
-      $criteria->localeEnabled = false;
-    } else if ($elementType === 'User') {
+      if (!empty($section)) {
+        $criteria->section = $section;
+      }
+      if (!empty($entryType)) {
+        $criteria->type = $entryType;
+      }
+      if (!empty($locale)) {
+        $criteria->locale = $locale;
+        $criteria->localeEnabled = false;
+      }
+
+    } else if ($elementType == 'User') {
+
+      $scopeResolution = ElementType::User;
+      $criteria = craft()->elements->getCriteria($scopeResolution);
       $criteria->group = $userGroup;
+
     }
+
+    if (!empty($status)) {
+      $criteria->status = $status == 'null' ? null : $status;
+    }
+
+    $criteria->offset = $offset ?? 0;
+
     $criteria->limit = null;
     $criteria->find();
 
+    // Set Criteria on class var
+    $this->criteria = $criteria;
     return $criteria;
   }
 }
