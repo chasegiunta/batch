@@ -1,9 +1,16 @@
 <?php
 /**
- * @link      https://dukt.net/craft/twitter/
- * @copyright Copyright (c) 2017, Dukt
- * @license   https://dukt.net/craft/twitter/docs/license
+ * Batch plugin for Craft CMS
+ *
+ * Batch Controller
+ *
+ * @author    ChaseGiunta
+ * @copyright Copyright (c) 2017 ChaseGiunta
+ * @link      chasegiunta.com
+ * @package   Batch
+ * @since     1.0.0
  */
+
 
 namespace Craft;
 
@@ -21,9 +28,7 @@ class Batch_SettingsController extends BaseController
      * @return null
      */
     public function actionIndex()
-    {
-        craft()->twitter->requireDependencies();
-
+    {x
         $plugin = craft()->plugins->getPlugin('batch');
 
         $this->renderTemplate('batch/settings');
