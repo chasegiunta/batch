@@ -144,11 +144,7 @@ class BatchTask extends BaseTask
   public function getCriteria()
   {
     $elementType  = $this->getSettings()->elementType;
-    $section      = $this->getSettings()->section;
-    $entryType    = $this->getSettings()->entryType;
     $status       = $this->getSettings()->status;
-    $locale       = $this->getSettings()->locale;
-    $userGroup    = $this->getSettings()->userGroup;
     $offset       = $this->getSettings()->offset;
 
     if (empty($elementType)) {
@@ -157,12 +153,16 @@ class BatchTask extends BaseTask
 
     if ($elementType == 'Entry') {
 
+      $section      = $this->getSettings()->section;
+      $entryType    = $this->getSettings()->entryType;
+      $locale       = $this->getSettings()->locale;
+
       $scopeResolution = ElementType::Entry;
       $criteria = craft()->elements->getCriteria($scopeResolution);
       if (!empty($section)) {
         $criteria->section = $section;
       }
-      if (!empty($entryType)) {
+      if (!empty($entryType) && 'null' != $entryType) {
         $criteria->type = $entryType;
       }
       if (!empty($locale)) {
@@ -171,6 +171,8 @@ class BatchTask extends BaseTask
       }
 
     } else if ($elementType == 'User') {
+
+      $userGroup    = $this->getSettings()->userGroup;
 
       $scopeResolution = ElementType::User;
       $criteria = craft()->elements->getCriteria($scopeResolution);
