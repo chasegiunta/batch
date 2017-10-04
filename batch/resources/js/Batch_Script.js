@@ -93,7 +93,7 @@ var batchSettings = new Vue({
       }
     },
     getFieldType() {
-      var timeoutValue = (this.entryType != null || this.entryTypes.length == 1) ? 0 : 500;
+      var timeoutValue = (this.entryType != 'null' || this.entryTypes.length == 1) ? 0 : 500;
       clearTimeout(window.timeout);
       var _this = this;
       window.timeout = setTimeout(function () {
