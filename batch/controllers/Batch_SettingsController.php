@@ -28,7 +28,7 @@ class Batch_SettingsController extends BaseController
      * @return null
      */
     public function actionIndex()
-    {x
+    {
         $plugin = craft()->plugins->getPlugin('batch');
 
         $this->renderTemplate('batch/settings');
