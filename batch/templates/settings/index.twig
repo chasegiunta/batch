@@ -26,6 +26,7 @@
   {% endif %}
     
   <form class="" method="post" accept-charset="UTF-8">
+    {{ getCsrfInput() }}
     <input type="hidden" name="action" value="batch">
     <input type="hidden" name="pluginClass" value="Batch">
     <input type="hidden" name="redirect" value="settings/plugins/batch/settings">
