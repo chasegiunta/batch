@@ -184,7 +184,7 @@ class BatchTask extends BaseTask
       $criteria->status = $status == 'null' ? null : $status;
     }
 
-    $criteria->offset = $offset ?? 0;
+    $criteria->offset = isset($offset) ? $offset : 0;
 
     $criteria->limit = null;
     $criteria->find();
