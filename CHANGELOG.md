@@ -1,5 +1,12 @@
 # Batch Changelog
 
+## 1.3.1 - 2017.10.21
+
+### Fixed
+* Batch task failing when setting 'All' on Entry Type option.
+* PHP 5 compatbility
+* CSRF token support
+
 ## 1.3.0 - 2017.09.01
 
 ### Added
